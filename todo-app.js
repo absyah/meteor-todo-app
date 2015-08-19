@@ -3,8 +3,23 @@ Task = new Mongo.Collection("tasks");
 if (Meteor.isClient) {
 
   Template.body.helpers({
+    // Tasks List
     tasks: function () {
-      return Task.find({}, {sort: {createdAt: -1}});
+      if (Session.get("hideCompleted")) {
+        return Task.find({checked: {$ne: true}}, {sort: {createdAt: -1}});
+      } else {
+        return Task.find({}, {sort: {createdAt: -1}});
+      }
+    },
+
+    // Checkbox hideCompleted
+    hideCompleted: function () {
+      return Session.get("hideCompleted");
+    },
+
+    // incomplete task counter
+    incompleteCount: function () {
+      return Task.find({checked: {$ne: true}}).count();
     }
   });
 
@@ -24,6 +39,11 @@ if (Meteor.isClient) {
 
       // Clear form
       event.target.text.value = "";
+    },
+
+    // Hide completed tasks
+    "change .hide-completed input": function (event) {
+      Session.set("hideCompleted", event.target.checked);
     }
   });
 
@@ -39,6 +59,7 @@ if (Meteor.isClient) {
     "click .delete": function () {
       Task.remove(this._id);
     }
+
   });
 
 }
