@@ -27,4 +27,18 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.task.events({
+    // update
+    "click .toggle-checked": function () {
+      Task.update(this._id, {
+        $set: {checked: ! this.checked}
+      });
+    },
+
+    // delete
+    "click .delete": function () {
+      Task.remove(this._id);
+    }
+  });
+
 }
