@@ -33,6 +33,8 @@ if (Meteor.isClient) {
 
       // Insert to Mongo
       Task.insert({
+        owner: Meteor.userId(),
+        username: Meteor.user().username,
         text: text,
         createdAt: new Date()
       });
@@ -58,8 +60,11 @@ if (Meteor.isClient) {
     // delete
     "click .delete": function () {
       Task.remove(this._id);
-    }
+    },
 
   });
 
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_ONLY"
+  });
 }
